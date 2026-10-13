@@ -74,3 +74,121 @@ describe('Suíte de Testes Fraca para 50 Operações Aritméticas', () => {
   test('49. deve calcular o triplo de um número', () => { expect(triplo(10)).toBe(30); });
   test('50. deve calcular a metade de um número', () => { expect(metade(20)).toBe(10); });
 });
+// =====================================================================
+// Testes adicionados para matar os mutantes sobreviventes do StrykerJS
+// =====================================================================
+describe('Suíte Reforçada: casos de borda e asserções específicas', () => {
+  // --- Mensagens de erro (mata mutantes StringLiteral: mensagem -> "") ---
+  describe('Mensagens de erro', () => {
+    test('divisao lança erro com a mensagem correta', () => {
+      expect(() => divisao(5, 0)).toThrow('Divisão por zero não é permitida.');
+    });
+    test('raizQuadrada lança erro com a mensagem correta para negativo', () => {
+      expect(() => raizQuadrada(-1)).toThrow('Não é possível calcular a raiz quadrada de um número negativo.');
+    });
+    test('fatorial lança erro com a mensagem correta para negativo', () => {
+      expect(() => fatorial(-1)).toThrow('Fatorial não é definido para números negativos.');
+    });
+    test('maximoArray lança erro para array vazio', () => {
+      expect(() => maximoArray([])).toThrow('possui valor máximo');
+    });
+    test('minimoArray lança erro para array vazio', () => {
+      expect(() => minimoArray([])).toThrow('possui valor mínimo');
+    });
+    test('inverso lança erro com a mensagem correta para zero', () => {
+      expect(() => inverso(0)).toThrow('Não é possível inverter o número zero.');
+    });
+    test('medianaArray lança erro para array vazio', () => {
+      expect(() => medianaArray([])).toThrow('possui mediana');
+    });
+  });
+
+  // --- Valores de fronteira (mata mutantes < -> <= e condições removidas) ---
+  describe('Fronteiras', () => {
+    test('raizQuadrada(0) retorna 0 e não lança erro', () => {
+      expect(raizQuadrada(0)).toBe(0);
+    });
+    test('fatorial(0) e fatorial(1) retornam 1', () => {
+      expect(fatorial(0)).toBe(1);
+      expect(fatorial(1)).toBe(1);
+    });
+    test('mediaArray de array vazio retorna 0 (e não NaN)', () => {
+      expect(mediaArray([])).toBe(0);
+    });
+    test('produtoArray de array vazio retorna 1', () => {
+      expect(produtoArray([])).toBe(1);
+    });
+  });
+
+  // --- Funções booleanas: testar também o caso "false" ---
+  describe('Predicados retornam false quando devem', () => {
+    test('isPar retorna false para ímpar', () => {
+      expect(isPar(7)).toBe(false);
+    });
+    test('isImpar retorna false para par', () => {
+      expect(isImpar(4)).toBe(false);
+    });
+    test('isDivisivel retorna false quando há resto', () => {
+      expect(isDivisivel(10, 3)).toBe(false);
+    });
+    test('isEqual retorna false para valores diferentes', () => {
+      expect(isEqual(7, 8)).toBe(false);
+    });
+    test('isMaiorQue retorna false quando a < b e quando a === b', () => {
+      expect(isMaiorQue(5, 10)).toBe(false);
+      expect(isMaiorQue(5, 5)).toBe(false);
+    });
+    test('isMenorQue retorna false quando a > b e quando a === b', () => {
+      expect(isMenorQue(10, 5)).toBe(false);
+      expect(isMenorQue(5, 5)).toBe(false);
+    });
+  });
+
+  // --- isPrimo ---
+  describe('isPrimo', () => {
+    test('0 e 1 não são primos', () => {
+      expect(isPrimo(0)).toBe(false);
+      expect(isPrimo(1)).toBe(false);
+    });
+    test('2 é primo', () => {
+      expect(isPrimo(2)).toBe(true);
+    });
+    test('números compostos não são primos', () => {
+      expect(isPrimo(4)).toBe(false);
+      expect(isPrimo(9)).toBe(false);
+    });
+  });
+
+  // --- clamp ---
+  describe('clamp', () => {
+    test('retorna o mínimo quando o valor está abaixo do intervalo', () => {
+      expect(clamp(-5, 0, 10)).toBe(0);
+    });
+    test('retorna o máximo quando o valor está acima do intervalo', () => {
+      expect(clamp(15, 0, 10)).toBe(10);
+    });
+  });
+
+  // --- Conversões de temperatura com entrada diferente de zero ---
+  describe('Conversões de temperatura', () => {
+    test('100 °C = 212 °F', () => {
+      expect(celsiusParaFahrenheit(100)).toBe(212);
+    });
+    test('212 °F = 100 °C', () => {
+      expect(fahrenheitParaCelsius(212)).toBe(100);
+    });
+  });
+
+  // --- medianaArray ---
+  describe('medianaArray', () => {
+    test('ordena o array antes de calcular (entrada desordenada, tamanho ímpar)', () => {
+      expect(medianaArray([5, 1, 3])).toBe(3);
+    });
+    test('calcula a média dos dois centrais para tamanho par', () => {
+      expect(medianaArray([1, 2, 3, 4])).toBe(2.5);
+    });
+    test('array par e desordenado', () => {
+      expect(medianaArray([10, 2, 8, 4])).toBe(6);
+    });
+  });
+});
